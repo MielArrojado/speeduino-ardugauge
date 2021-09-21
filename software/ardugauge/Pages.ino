@@ -24,18 +24,18 @@ void showSplash(char* message){
   OLED.display();
 }
 
-void showNumeric(Data* source, char* label, char* units){
+void showNumeric(Data &source, char* label, char* units){
   // get source data
-  int16_t min = source->getMin();
-  int16_t max = source->getMax();
-  uint16_t factor = source->getFactor();
-  source->request(10);
-  int value = source->get();
+  int16_t min = source.getMin();
+  int16_t max = source.getMax();
+  uint16_t factor = source.getFactor();
+  source.request();
+  int value = source.get();
   
   // allocate character space
   uint8_t unitsLen = strlen(units);
   char temp[16];
-  uint8_t centering = centering24p(source,temp);
+  uint8_t offset = centering(source,temp,24);
 
   OLED.clearDisplay();
   OLED.setCursor(0, 0);
@@ -43,24 +43,24 @@ void showNumeric(Data* source, char* label, char* units){
   OLED.setCursor(127-6*unitsLen,0);
   OLED.print(units);
   OLED.setFont(&Numbers24pt7b);
-  OLED.setCursor(centering,51);
+  OLED.setCursor(offset,51);
   OLED.print(temp);
   OLED.setFont();
   OLED.display();
 }
 
-void showBar(Data* source, char* label, char* units){
+void showBar(Data &source, char* label, char* units){
   // get source data
-  int16_t min = source->getMin();
-  int16_t max = source->getMax();
-  uint16_t factor = source->getFactor();
-  source->request(10);
-  int value = source->get();
+  int16_t min = source.getMin();
+  int16_t max = source.getMax();
+  uint16_t factor = source.getFactor();
+  source.request();
+  int value = source.get();
   
   // allocate character space
   uint8_t unitsLen = strlen(units);
   char temp[16];
-  uint8_t centering = centering24p(source,temp);
+  uint8_t offset = centering(source,temp,24);
   uint8_t width = constrain(((long)value-min)*128/(max-min),0,128);
 
   OLED.clearDisplay();
@@ -69,23 +69,79 @@ void showBar(Data* source, char* label, char* units){
   OLED.setCursor(127-6*unitsLen,0);
   OLED.print(units);
   OLED.setFont(&Numbers24pt7b);
-  OLED.setCursor(centering,44);
+  OLED.setCursor(offset,44);
   OLED.print(temp);
   OLED.setFont();
-  drawHBar( 0, 50, 128, 14, width);
+  drawHBar( 0, 50, 128, 14, 8, width);
   OLED.display();
 }
 
-uint8_t centering24p(Data* source, char* buf){
+// void show2Bar(Data* source1, char* label1, char* units1,
+//               Data* source2, char* label2, char* units2){
+//     // get source data
+//   int16_t min1 = source1->getMin();
+//   int16_t max1 = source1->getMax();
+//   uint16_t factor1 = source1->getFactor();
+//   int16_t min2 = source2->getMin();
+//   int16_t max2 = source2->getMax();
+//   uint16_t factor2 = source2->getFactor();
+//   source1->request();
+//   source2->request();
+//   int value1 = source1->get();
+//   int value2 = source2->get();
+  
+//   // allocate character space
+//   uint8_t units1Len = strlen(units1);
+//   char temp1[16];
+//   uint8_t offset1 = centering(source1,temp1,12);
+//   uint8_t width1 = constrain(((long)value1-min1)*128/(max1-min1),0,128);
+  
+//   uint8_t units2Len = strlen(units2);
+//   char temp2[16];
+//   uint8_t offset2 = centering(source2,temp2,12);
+//   uint8_t width2 = constrain(((long)value2-min2)*128/(max2-min2),0,128);
+
+//   OLED.clearDisplay();
+
+//   OLED.setCursor(0, 0);
+//   OLED.print(label1);
+//   OLED.setCursor(127-6*units1Len,0);
+//   OLED.print(units1);
+//   // OLED.setFont(&Numbers24pt7b);
+//   OLED.setTextSize(2);
+//   OLED.setCursor(offset1,9);
+//   OLED.print(temp1);
+//   // OLED.setFont();
+//   OLED.setTextSize(1);
+//   drawHBar( 0, 23, 128, 8, 4, width1);
+
+//   OLED.setCursor(0, 33);
+//   OLED.print(label2);
+//   OLED.setCursor(127-6*units2Len,33);
+//   OLED.print(units2);
+//   // OLED.setFont(&Numbers24pt7b);
+//   OLED.setTextSize(2);
+//   OLED.setCursor(offset2,42);
+//   OLED.print(temp2);
+//   // OLED.setFont();
+//   OLED.setTextSize(1);
+//   drawHBar( 0, 56, 128, 8, 4, width2);
+
+//   OLED.display();
+  
+// }
+
+
+uint8_t centering(Data &source, char* buf, uint8_t c_width, uint8_t field_width){
   uint8_t valLen = 15;
-  uint16_t factor = source->getFactor();
-  int value = source->get();
+  uint16_t factor = source.getFactor();
+  int value = source.get();
   char temp[16];
 
   // get max character count
-  sprintf(temp,"%d", source->getMin());
+  sprintf(temp,"%d", source.getMin());
   valLen = strlen(temp);
-  sprintf(temp,"%d", source->getMax());
+  sprintf(temp,"%d", source.getMax());
   valLen = max(valLen,strlen(temp));
   // add space for decimal point
   if(factor!=1)valLen++;
@@ -99,15 +155,16 @@ uint8_t centering24p(Data* source, char* buf){
     sprintf(buf,"%d",value);
   }
 
-  return (64-(12*valLen)+(valLen - strlen(buf))*24);
+  return ((field_width-c_width*valLen)/2+(valLen - strlen(buf))*c_width);
 }
 
-void drawHBar(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t bar_w){
+void drawHBar(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t bar_h, uint8_t bar_w){
   uint8_t q0 = x;
   uint8_t q1 = x+(w-1)>>2;
   uint8_t q2 = x+(w-1)>>1;
   uint8_t q3 = x+3*((w-1)>>2);
   uint8_t q4 = x+w-1;
+  uint8_t bar_y = (h-bar_h-1)/2+y;
 
   OLED.drawFastVLine(q0,  y,    h,  SSD1306_WHITE);
   OLED.drawFastVLine(q1,  y+h-5,4,  SSD1306_WHITE);
@@ -116,7 +173,7 @@ void drawHBar(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t bar_w){
   OLED.drawFastVLine(q3,  y+h-5,4,  SSD1306_WHITE);
   OLED.drawFastVLine(q4,  y,    h,  SSD1306_WHITE);
   OLED.drawFastHLine(x,   y+h-1,w,  SSD1306_WHITE);
-  OLED.fillRect(x,   y+2, bar_w,h-6,SSD1306_WHITE);
-  OLED.drawFastVLine(q0+1,y+2,  h-6,SSD1306_BLACK);
-  OLED.drawFastVLine(q4-1,y+2,  h-6,SSD1306_BLACK);
+  OLED.fillRect(x,   bar_y, bar_w,bar_h,SSD1306_WHITE);
+  OLED.drawFastVLine(q0+1,bar_y,  bar_h,SSD1306_BLACK);
+  OLED.drawFastVLine(q4-1,bar_y,  bar_h,SSD1306_BLACK);
 }

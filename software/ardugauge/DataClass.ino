@@ -1,13 +1,17 @@
 #include "Arduino.h"
 #include "DataClass.h"
 
-Data::Data(uint16_t address, uint16_t length, int16_t min, int16_t max, uint16_t factor) {
+Data::Data(uint16_t address, uint16_t length, int16_t min, int16_t max, uint16_t factor, bool isSigned) {
   _address = address;
   _length = length;
   _value = 0;
   _factor = factor;
   _min = min;
   _max = max;
+  _signed = isSigned;
+
+  _scale = 1;
+  _offset = 0;
 }
 
 void Data::request(uint16_t timeout) {
@@ -38,34 +42,34 @@ void Data::request(uint16_t timeout) {
     }
   }
   // else sweep
-  else if(_min != _max)
-  {
-    _timer = (millis()>>2) & 0x3FF;
+  // else
+  // {
+  //   _timer = (millis()>>2) & 0x3FF;
   
-    int value = 0;
+  //   int value = 0;
 
-    if(_timer < 512){
-      value = _min+(((_max-_min)*_timer)>>9);
-    }
-    else{
-      value = _min+(((_max-_min)*(1023-_timer))>>9);
-    }
-    _data[1] = value >> 8;
-    _data[0] = value & 0xFF;
-  }
-  else 
-  {
-    _data[1] = 0;
-    _data[0] = 0;
-  }
+  //   if(_timer < 512){
+  //     value = _min+(((_max-_min)*_timer)>>9);
+  //   }
+  //   else{
+  //     value = _min+(((_max-_min)*(1023-_timer))>>9);
+  //   }
+  //   _data[1] = value >> 8;
+  //   _data[0] = value & 0xFF;
+  // }
 }
 
 int Data::get() {
   if (_length == 2) {
     _value = _data[0] + (_data[1] << 8);
-  } else {
+  } else if(_signed){
     _value = (signed char)_data[0];
+  } else{
+    _value = _data[0];
   }
+
+  _value = _value*_scale + _offset;
+
   return _value;
 }
 
@@ -79,4 +83,17 @@ int16_t Data::getMax(){
 
 uint16_t Data::getFactor(){
   return _factor;
+}
+
+void Data::setScale(float scale){
+  _scale = scale;
+}
+
+void Data::setOffset(int16_t offset){
+  _offset = offset;
+}
+
+void Data::setValue(int value){
+  _data[0] = value & 0xFF;
+  _data[1] = value >> 8;
 }
