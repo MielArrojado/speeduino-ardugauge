@@ -23,7 +23,7 @@ Page Page5(&dataVbt, "Battery", "V");
 // Page Page6(&dataVSS, "Speed", "kph"); // speed
 // Page Page7(&dataVbat,"AFR",":1"); // oil vs rpm
 // Page Page8(&dataDwl, "Dwell","ms"); // dwell vs V
-Page Page9(&dataAdv,"Advance",""); // adv vs rpm and map
+// Page Page9(&dataAdv,"Advance",""); // adv vs rpm and map
 // Page Page10(&dataVbat,"AFR",":1"); // 4 window fast
 // Page Page11(&dataVbat,"AFR",":1"); // 4 window slow
 // Page Page12(&dataVbat,"AFR",":1"); // status bits
