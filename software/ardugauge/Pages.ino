@@ -3,23 +3,24 @@
 #include "DataClass.h"
 #include <Adafruit_SSD1306.h>
 #include "Numbers24pt7b.h"
-#include <splash.h>
+#include "splash.h"
 
 Adafruit_SSD1306 OLED(128, 64, &Wire, -1);
 
 void initDisplay() {
   OLED.begin(SSD1306_SWITCHCAPVCC, 60);
-  OLED.display();
-  delay(1000);
   OLED.setFont();
   OLED.setTextColor(WHITE);
+  showSplash("ARDUGAUGE");
+  delay(1000);
 }
 
 void showSplash(char* message){
   OLED.clearDisplay();
-  OLED.drawBitmap((128 - splash2_width) / 2, (64 - splash2_height) / 2,
-               splash2_data, splash2_width, splash2_height, 1);
-  OLED.setCursor(0,56);
+  OLED.drawBitmap((128 - splash1_width) / 2, (64 - splash1_height) / 2,
+               splash1_data, splash1_width, splash1_height, 1);
+  uint8_t offset = centering(message,6);
+  OLED.setCursor(offset, 56);
   OLED.print(message);
   OLED.display();
 }
@@ -35,7 +36,8 @@ void showNumeric(Data &source, char* label, char* units){
   // allocate character space
   uint8_t unitsLen = strlen(units);
   char temp[16];
-  uint8_t offset = centering(source,temp,24);
+  uint8_t valLen = formatVal(source,temp);
+  uint8_t offset = centering(temp, 24, 128, valLen);
 
   OLED.clearDisplay();
   OLED.setCursor(0, 0);
@@ -60,7 +62,8 @@ void showBar(Data &source, char* label, char* units){
   // allocate character space
   uint8_t unitsLen = strlen(units);
   char temp[16];
-  uint8_t offset = centering(source,temp,24);
+  uint8_t valLen = formatVal(source,temp);
+  uint8_t offset = centering(temp, 24, 128, valLen);
   uint8_t width = constrain(((long)value-min)*128/(max-min),0,128);
 
   OLED.clearDisplay();
@@ -93,12 +96,14 @@ void showBar(Data &source, char* label, char* units){
 //   // allocate character space
 //   uint8_t units1Len = strlen(units1);
 //   char temp1[16];
-//   uint8_t offset1 = centering(source1,temp1,12);
+//   uint8_t valLen1 = formatVal(source1,temp1);
+  // uint8_t offset1 = centering(temp1, 24, 128, valLen1);
 //   uint8_t width1 = constrain(((long)value1-min1)*128/(max1-min1),0,128);
   
 //   uint8_t units2Len = strlen(units2);
 //   char temp2[16];
-//   uint8_t offset2 = centering(source2,temp2,12);
+//   uint8_t valLen2 = formatVal(source2,temp2);
+  // uint8_t offset2 = centering(temp2, 24, 128, valLen2);
 //   uint8_t width2 = constrain(((long)value2-min2)*128/(max2-min2),0,128);
 
 //   OLED.clearDisplay();
@@ -131,8 +136,7 @@ void showBar(Data &source, char* label, char* units){
   
 // }
 
-
-uint8_t centering(Data &source, char* buf, uint8_t c_width, uint8_t field_width){
+uint8_t formatVal(Data &source, char* buf){
   uint8_t valLen = 15;
   uint16_t factor = source.getFactor();
   int value = source.get();
@@ -146,7 +150,7 @@ uint8_t centering(Data &source, char* buf, uint8_t c_width, uint8_t field_width)
   // add space for decimal point
   if(factor!=1)valLen++;
 
-  // calc center offset
+  // write string to buf 
   if (factor > 1){
     sprintf(temp,"%d",factor);
     dtostrf((float)value/factor,1+strlen(temp),strlen(temp)-1,buf);
@@ -155,7 +159,13 @@ uint8_t centering(Data &source, char* buf, uint8_t c_width, uint8_t field_width)
     sprintf(buf,"%d",value);
   }
 
-  return ((field_width-c_width*valLen)/2+(valLen - strlen(buf))*c_width);
+  // return val length
+  return valLen;
+}
+
+uint8_t centering(char* buf, uint8_t c_width, uint8_t field_width, uint8_t min_len){
+  if (min_len == 0) {min_len = strlen(buf);}
+  return ((field_width-c_width*min_len)/2+(min_len - strlen(buf))*c_width);
 }
 
 void drawHBar(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t bar_h, uint8_t bar_w){
