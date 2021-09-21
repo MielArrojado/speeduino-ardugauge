@@ -34,25 +34,8 @@ void showNumeric(Data* source, char* label, char* units){
   
   // allocate character space
   uint8_t unitsLen = strlen(units);
-  uint8_t valLen = 16;
   char temp[16];
-
-  sprintf(temp,"%d", min);
-  valLen = strlen(temp);
-  sprintf(temp,"%d", max);
-  valLen = max(valLen,strlen(temp));
-  if(source->getFactor()!=1)valLen++;
-
-  // Center Numeric Display
-  if (factor > 1){
-    sprintf(temp,"%d",factor);
-    dtostrf((float)value/factor,1+strlen(temp),strlen(temp)-1,temp);
-  }
-  else{
-    sprintf(temp,"%d",value);
-  }
-  uint8_t offset = (valLen - strlen(temp))*24;
-  uint8_t centering = 64-(12*valLen)+offset;
+  uint8_t centering = centering24p(source,temp);
 
   OLED.clearDisplay();
   OLED.setCursor(0, 0);
@@ -60,7 +43,7 @@ void showNumeric(Data* source, char* label, char* units){
   OLED.setCursor(127-6*unitsLen,0);
   OLED.print(units);
   OLED.setFont(&Numbers24pt7b);
-  OLED.setCursor(centering,56);
+  OLED.setCursor(centering,51);
   OLED.print(temp);
   OLED.setFont();
   OLED.display();
@@ -76,25 +59,8 @@ void showBar(Data* source, char* label, char* units){
   
   // allocate character space
   uint8_t unitsLen = strlen(units);
-  uint8_t valLen = 16;
   char temp[16];
-
-  sprintf(temp,"%d", min);
-  valLen = strlen(temp);
-  sprintf(temp,"%d", max);
-  valLen = max(valLen,strlen(temp));
-  if(source->getFactor()!=1)valLen++;
-  
-  // Center Numeric Display
-  if (factor > 1){
-    sprintf(temp,"%d",factor);
-    dtostrf((float)value/factor,1+strlen(temp),strlen(temp)-1,temp);
-  }
-  else{
-    sprintf(temp,"%d",value);
-  }
-  uint8_t offset = (valLen - strlen(temp))*24;
-  uint8_t centering = 64-(12*valLen)+offset;
+  uint8_t centering = centering24p(source,temp);
   uint8_t width = constrain(((long)value-min)*128/(max-min),0,128);
 
   OLED.clearDisplay();
@@ -106,107 +72,51 @@ void showBar(Data* source, char* label, char* units){
   OLED.setCursor(centering,44);
   OLED.print(temp);
   OLED.setFont();
-  OLED.drawFastVLine(0, 50, 14, 1);
-  OLED.drawFastVLine(31,60,4,1);
-  OLED.drawFastVLine(63,60,4,1);
-  OLED.drawFastVLine(64,60,4,1);
-  OLED.drawFastVLine(96,60,4,1);
-  OLED.drawFastVLine(127,50,14,1);
-  OLED.drawFastHLine(0,63,128,1);
-  OLED.fillRect(0, 52, width, 8, 1);
-  OLED.drawFastVLine(1,52,8,0);
-  OLED.drawFastVLine(126,52,8,0);
+  drawHBar( 0, 50, 128, 14, width);
   OLED.display();
 }
 
-
-Page::Page(Data* source, char* label, char* units) {
-  _source = source;
-  // initialize properties
-  setLabel(label);
-  setUnits(units);
-  // determine max width;
-  char temp[16];
-  sprintf(temp,"%d", _source->getMin());
-  _valLen = strlen(temp);
-  sprintf(temp,"%d", _source->getMax());
-  _valLen = max(_valLen,strlen(temp));
-  if(_source->getFactor()!=1)_valLen++;
-}
-
-void Page::display() {
-  _source->request(10);
-  int value = _source->get();
+uint8_t centering24p(Data* source, char* buf){
+  uint8_t valLen = 15;
+  uint16_t factor = source->getFactor();
+  int value = source->get();
   char temp[16];
 
-  // Center Numeric Display
-  uint16_t factor = _source->getFactor();
+  // get max character count
+  sprintf(temp,"%d", source->getMin());
+  valLen = strlen(temp);
+  sprintf(temp,"%d", source->getMax());
+  valLen = max(valLen,strlen(temp));
+  // add space for decimal point
+  if(factor!=1)valLen++;
+
+  // calc center offset
   if (factor > 1){
     sprintf(temp,"%d",factor);
-    dtostrf((float)value/factor,1+strlen(temp),strlen(temp)-1,temp);
+    dtostrf((float)value/factor,1+strlen(temp),strlen(temp)-1,buf);
   }
   else{
-    sprintf(temp,"%d",value);
+    sprintf(buf,"%d",value);
   }
-  uint8_t offset = (_valLen - strlen(temp))*24;
-  uint8_t centering = 64-(12*_valLen)+offset;
-  
-  // bar graph width
-  int16_t min = _source->getMin();
-  int16_t max = _source->getMax();
 
-  OLED.clearDisplay();
-  OLED.setCursor(0, 0);
-  OLED.print(_label);
-  OLED.setCursor(127-6*_unitsLen,0);
-  OLED.print(_units);
-  OLED.setFont(&Numbers24pt7b);
-  
-  if(max!=min){
-    uint8_t width = constrain(((long)value-min)*128/(max-min),0,128);
-    OLED.drawFastVLine(0, 50, 14, 1);
-    OLED.drawFastVLine(31,60,4,1);
-    OLED.drawFastVLine(63,60,4,1);
-    OLED.drawFastVLine(64,60,4,1);
-    OLED.drawFastVLine(96,60,4,1);
-    OLED.drawFastVLine(127,50,14,1);
-    OLED.drawFastHLine(0,63,128,1);
-    OLED.fillRect(0, 52, width, 8, 1);
-    OLED.drawFastVLine(1,52,8,0);
-    OLED.drawFastVLine(126,52,8,0);
-    OLED.setCursor(centering,44);
-  }
-  else{
-    OLED.setCursor(centering,56);
-  }
-  OLED.print(temp);
-  OLED.setFont();
-  OLED.display();
+  return (64-(12*valLen)+(valLen - strlen(buf))*24);
 }
 
-void Page::setLabel(char* label){
-  strcpy(_label, label);
-  _labelLen = strlen(_label);
-}
+void drawHBar(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t bar_w){
+  uint8_t q0 = x;
+  uint8_t q1 = x+(w-1)>>2;
+  uint8_t q2 = x+(w-1)>>1;
+  uint8_t q3 = x+3*((w-1)>>2);
+  uint8_t q4 = x+w-1;
 
-void Page::setUnits(char* units){
-  strcpy(_units, units);
-  _unitsLen = strlen(_units);
-}
-
-void Page::initDisplay() {
-  OLED.begin(SSD1306_SWITCHCAPVCC, 60);
-  OLED.display();
-  delay(1000);
-  OLED.setFont();
-  OLED.setTextColor(WHITE);
-}
-
-void Page::defaultPage(uint8_t pageNum){
-  OLED.clearDisplay();
-  OLED.drawBitmap((128 - splash2_width) / 2, (64 - splash2_height) / 2,
-               splash2_data, splash2_width, splash2_height, 1);
-  OLED.setCursor(0,56);
-  OLED.print(pageNum);
-  OLED.display();
+  OLED.drawFastVLine(q0,  y,    h,  SSD1306_WHITE);
+  OLED.drawFastVLine(q1,  y+h-5,4,  SSD1306_WHITE);
+  OLED.drawFastVLine(q2,  y+h-5,4,  SSD1306_WHITE);
+  OLED.drawFastVLine(q2+1,y+h-5,4,  SSD1306_WHITE);
+  OLED.drawFastVLine(q3,  y+h-5,4,  SSD1306_WHITE);
+  OLED.drawFastVLine(q4,  y,    h,  SSD1306_WHITE);
+  OLED.drawFastHLine(x,   y+h-1,w,  SSD1306_WHITE);
+  OLED.fillRect(x,   y+2, bar_w,h-6,SSD1306_WHITE);
+  OLED.drawFastVLine(q0+1,y+2,  h-6,SSD1306_BLACK);
+  OLED.drawFastVLine(q4-1,y+2,  h-6,SSD1306_BLACK);
 }

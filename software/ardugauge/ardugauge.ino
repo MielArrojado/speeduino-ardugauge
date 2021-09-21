@@ -36,7 +36,7 @@ void setup() {
 }
 
 void loop() {
-  static uint8_t pageNum = 0;
+  static uint8_t pageNum = 6;
   static bool buttonLast = false;
   bool buttonNow = !digitalRead(2);
   if (buttonLast & !buttonNow){
@@ -51,7 +51,7 @@ void loop() {
     case 3: showBar(&dataCLT, "Coolant Temp", "\'C"); break;
     case 4: showBar(&dataEOP, "Oil Pressure", "psi"); break;
     case 5: showBar(&dataVbt, "Battery", "V"); break;
-    case 6: showBar(&dataVSS, "Speed", "kph"); break;
+    case 6: showNumeric(&dataVSS, "Speed", "kph"); break;
     case 7: showSplash("Oil vs RPM"); break;
     case 8: showSplash("Dwell vs Voltage"); break;
     case 9: showSplash("2D Advance, rpm, map"); break;

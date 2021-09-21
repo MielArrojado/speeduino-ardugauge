@@ -8,21 +8,7 @@ void showSplash(char* message="");
 void showNumeric(Data* source, char* label, char* units = "");
 void showBar(Data* source, char* label, char* units = "");
 
-class Page{
-  public:
-    Page(Data* source, char* label = "", char* units = "");
-    void setLabel(char* label);
-    void setUnits(char* units);
-    void display();
-    static void initDisplay();
-    static void defaultPage(uint8_t pageNum=0);
-  private:
-    Data* _source;
-    char _label[22];
-    char _units[4];
-    uint8_t _labelLen;
-    uint8_t _unitsLen;
-    uint8_t _valLen;
-};
+uint8_t centering24p(Data* source, char* buf);
+void drawHBar(uint8_t x, uint8_t y, uint8_t w, uint8_t h, uint8_t bar_w);
 
 #endif //PAGES_H
