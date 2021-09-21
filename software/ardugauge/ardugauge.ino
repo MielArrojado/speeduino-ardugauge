@@ -9,17 +9,17 @@ Data data_O2(10,1,0,20);
 Data dataCLT(7,1,0,120);
 Data dataEOP(104, 1, 0, 100);
 Data dataVbt(9,1,6, 16);
-Data dataVSS(100,2,0,0);
+Data dataVSS(100,2,0,1000);
 Data dataDwl(3,1,0,100);
 Data dataAdv(23,1,-120,120);
 
 /* Pages*/
-Page Page0(&dataRPM, "Engine Speed", "RPM");
-Page Page1(&dataMAP, "MAP", "kPa");
-Page Page2(&data_O2, "AFR",":1");
-Page Page3(&dataCLT, "Coolant Temp", "\'C");
-Page Page4(&dataEOP, "Oil Pressure", "psi");
-Page Page5(&dataVbt, "Battery", "V");
+// Page Page0(&dataRPM, "Engine Speed", "RPM");
+// Page Page1(&dataMAP, "MAP", "kPa");
+// Page Page2(&data_O2, "AFR",":1");
+// Page Page3(&dataCLT, "Coolant Temp", "\'C");
+// Page Page4(&dataEOP, "Oil Pressure", "psi");
+// Page Page5(&dataVbt, "Battery", "V");
 // Page Page6(&dataVSS, "Speed", "kph"); // speed
 // Page Page7(&dataVbat,"AFR",":1"); // oil vs rpm
 // Page Page8(&dataDwl, "Dwell","ms"); // dwell vs V
@@ -32,7 +32,7 @@ Page Page5(&dataVbt, "Battery", "V");
 
 void setup() {
   Serial.begin(115200);
-  Page::initDisplay();
+  initDisplay();
 }
 
 void loop() {
@@ -45,23 +45,23 @@ void loop() {
   buttonLast = buttonNow;
 
   switch(pageNum){
-    case 0: Page0.display(); break;
-    case 1: Page1.display(); break;
-    case 2: Page2.display(); break;
-    case 3: Page3.display(); break;
-    case 4: Page4.display(); break;
-    case 5: Page5.display(); break;
-    case 6: Page::defaultPage(pageNum+1); break;
-    case 7: Page::defaultPage(pageNum+1); break;
-    case 8: Page::defaultPage(pageNum+1); break;
-    case 9: Page::defaultPage(pageNum+1); break;
-    case 10: Page::defaultPage(pageNum+1); break;
-    case 11: Page::defaultPage(pageNum+1); break;
-    case 12: Page::defaultPage(pageNum+1); break;
-    case 13: Page::defaultPage(pageNum+1); break;
+    case 0: showBar(&dataRPM, "Engine Speed", "RPM"); break;
+    case 1: showBar(&dataMAP, "MAP", "kPa"); break;
+    case 2: showBar(&data_O2, "AFR",":1"); break;
+    case 3: showBar(&dataCLT, "Coolant Temp", "\'C"); break;
+    case 4: showBar(&dataEOP, "Oil Pressure", "psi"); break;
+    case 5: showBar(&dataVbt, "Battery", "V"); break;
+    case 6: showBar(&dataVSS, "Speed", "kph"); break;
+    case 7: showSplash("Oil vs RPM"); break;
+    case 8: showSplash("Dwell vs Voltage"); break;
+    case 9: showSplash("2D Advance, rpm, map"); break;
+    case 10: showSplash("4W RPM map o2 adv"); break;
+    case 11: showSplash("4W RPM oil volt clt"); break;
+    case 12: showSplash("system"); break;
+    case 13: showSplash("status"); break;
     
     default:
-      Page0.display();
+      showBar(&dataRPM, "Engine Speed", "RPM");
       pageNum = 0;
       break; 
   }

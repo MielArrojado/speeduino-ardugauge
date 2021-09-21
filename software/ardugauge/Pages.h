@@ -3,6 +3,11 @@
 
 #include "DataClass.h"
 
+void initDisplay();
+void showSplash(char* message="");
+void showNumeric(Data* source, char* label, char* units = "");
+void showBar(Data* source, char* label, char* units = "");
+
 class Page{
   public:
     Page(Data* source, char* label = "", char* units = "");
