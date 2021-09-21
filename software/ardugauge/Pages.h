@@ -5,11 +5,12 @@
 
 class Page{
   public:
-    Page(Data* source);
+    Page(Data* source, char* label = "", char* units = "");
     void setLabel(char* label);
     void setUnits(char* units);
     void display();
     static void initDisplay();
+    static void defaultPage(uint8_t pageNum=0);
   private:
     Data* _source;
     char _label[22];
