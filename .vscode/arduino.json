@@ -1,0 +1,6 @@
+{
+    "configuration": "cpu=atmega328old",
+    "board": "arduino:avr:nano",
+    "port": "/dev/cu.usbserial-1410",
+    "sketch": "software/ardugauge/ardugauge.ino"
+}
