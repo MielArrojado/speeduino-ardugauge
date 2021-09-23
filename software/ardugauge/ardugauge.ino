@@ -1,17 +1,10 @@
 #include "Arduino.h"
 #include "Pages.h"
-#include "DataClass.h"
+#include "Comms.h"
+#define N_PAGES 10
 
 /* Data sources*/
-Data dataRPM = {14, 2, 0, 6000, 1, false, "Engine Speed (RPM)"};
-Data dataMAP = {4, 2, 0, 120, 1, false, "MAP (kPa)"};
-Data data_O2 = {10, 1, 70, 200, 10, false, "AFR"};
-Data dataCLT = {7, 1, 0, 120, 1, false, "Coolant Temp (\367C)"};
-Data dataEOP = {104, 1, 0, 100, 1, false, "Oil Pressure (psi)"};
-Data dataVbt = {9, 1, 60, 160, 10, false, "Battery (V)"};
-Data dataVSS = {100, 2, 0, 1000, 1, false, "Speed (kph)"};
-Data dataDwl = {3, 1, 0, 100, 10, false, "Dwell (ms)"};
-Data dataAdv = {23, 1, -20, 20, 1, true, "Advance (deg)"};
+// Data dataDwl = {3, 1, 0, 100, 10, false, "Dwell (ms)"};
 
 void setup()
 {
@@ -21,38 +14,58 @@ void setup()
 
 void loop()
 {
-  static uint8_t pageNum = 0;
+  static uint16_t pageNum = 0;
   static bool buttonLast = false;
   bool buttonNow = !digitalRead(2);
   digitalWrite(LED_BUILTIN, buttonNow);
   if (buttonLast & !buttonNow)
   {
     pageNum++;
+    if (pageNum >= N_PAGES)
+      pageNum = 0;
   }
   buttonLast = buttonNow;
+  int16_t value = 0;
 
   switch (pageNum)
   {
   case 0:
-    showBar(dataRPM);
+    showBar("Engine Speed (RPM)", getWord(14), 0, 6000);
     break;
   case 1:
-    showBar(dataMAP);
+    showBar("MAP (kPa)", getWord(4), 0, 101);
     break;
   case 2:
-    showBar(data_O2);
+    showBar("AFR", getByte(10), 60, 200, 1);
     break;
   case 3:
-    showBar(dataEOP);
+    value = (((int32_t)getByte(7) - 32) * 500) / 900;
+    showBar("Coolant Temp (\367C)", value, 0, 120);
     break;
   case 4:
-    showBar(dataVbt);
+    showBar("Oil Pressure (psi)", getByte(104), 0, 100);
     break;
   case 5:
-    showBar(dataAdv);
+    showBar("Battery (V)", getByte(9), 60, 160, 1);
+    break;
+  case 6:
+    showNumeric("Speed (kph)", getWord(100), 0, 300);
+    break;
+  case 7:
+    showSplash("Oil Pressure vs RPM");
+    // show2Bar("Oil Pressure (psi)", getByte(104), 0, 100, 0,
+    //          "Engine Speed (RPM)", getWord(14), 0, 6000, 0);
+    break;
+  case 8:
+    showBar("Dwell(ms)", getByte(3), 0, 200, 1);
+    // show2Bar("Dwell(ms)", getByte(3), 0, 200, 1,
+    //  "Battery (V)", getByte(9), 60, 160, 1);
+    break;
+  case 9:
+    showBar("Advance (deg)", (int8_t)getByte(23), -10, 40);
     break;
   default:
-    pageNum = 0;
+    showSplash("Coming Soon!");
     break;
   }
 
