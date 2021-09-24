@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "Pages.h"
 #include "Comms.h"
-#define N_PAGES 12
+#define N_PAGES 13
 
 void setup()
 {
@@ -71,6 +71,16 @@ void loop()
                  F("Batt (V)"), getByte(9), 60, 160, 1,
                  //  F(""), 0, 0, 1, 0);
                  F("Dwell (ms)"), (int8_t)getByte(23), -10, 40, 0);
+    break;
+  case 12:
+    showFlags(F("crank"), getBit(2, 1),
+              F("RUN"), getBit(2, 0),
+              F("sync"), getBit(31, 7),
+              F("warm"), getBit(2, 3),
+              F("soft"), getBit(31, 3),
+              F("HARD"), getBit(31, 2),
+              F(""), false,
+              F("OIL"), getBit(83, 2));
 
     break;
   default:

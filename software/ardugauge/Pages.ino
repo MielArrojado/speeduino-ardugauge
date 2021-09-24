@@ -184,6 +184,52 @@ void show4Numeric(const __FlashStringHelper *label1, int16_t value1, int16_t min
   OLED.display();
 }
 
+void showFlags(const __FlashStringHelper *label1, bool value1,
+               const __FlashStringHelper *label2, bool value2,
+               const __FlashStringHelper *label3, bool value3,
+               const __FlashStringHelper *label4, bool value4,
+               const __FlashStringHelper *label5, bool value5,
+               const __FlashStringHelper *label6, bool value6,
+               const __FlashStringHelper *label7, bool value7,
+               const __FlashStringHelper *label8, bool value8)
+{
+  OLED.clearDisplay();
+
+  drawFlag(label1, value1, 1, 1);
+  drawFlag(label2, value2, 65, 1);
+  drawFlag(label3, value3, 1, 17);
+  drawFlag(label4, value4, 65, 17);
+  drawFlag(label5, value5, 1, 33);
+  drawFlag(label6, value6, 65, 33);
+  drawFlag(label7, value7, 1, 49);
+  drawFlag(label8, value8, 65, 49);
+
+  OLED.display();
+}
+
+void drawFlag(const __FlashStringHelper *label, bool value, uint8_t x, uint8_t y, uint8_t w, uint8_t h)
+{
+  if (strlen_P(reinterpret_cast<const char *>(label)) != 0)
+  {
+    uint8_t max_char = strlen_P(reinterpret_cast<const char *>(label));
+    uint8_t x_offset = ((w - 6 * max_char) / 2);
+    uint8_t y_offset = (h - 8) / 2;
+
+    OLED.setCursor(x + x_offset, y + y_offset);
+    OLED.print(label);
+
+    OLED.setCursor(x, y);
+    if (value)
+    {
+      OLED.fillRoundRect(x, y, w, h, 2, SSD1306_INVERSE);
+    }
+    else
+    {
+      OLED.drawRoundRect(x, y, w, h, 2, SSD1306_WHITE);
+    }
+  }
+}
+
 uint8_t maxChar(int32_t min_val, int32_t max_val, uint8_t decimal)
 {
   static char buf[STRING_LENGTH];
