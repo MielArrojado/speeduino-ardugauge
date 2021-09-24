@@ -1,25 +1,34 @@
+#include <EEPROM.h>
 #include "Arduino.h"
 #include "Pages.h"
 #include "Comms.h"
 #define N_PAGES 14
 
+uint8_t pageNum = EEPROM.read(0);
+
 void setup()
 {
   Serial.begin(115200);
   initDisplay();
+  if (pageNum >= N_PAGES)
+  {
+    pageNum = 0;
+    EEPROM.update(0, pageNum);
+  }
 }
 
 void loop()
 {
-  static uint16_t pageNum = 10;
   static bool buttonLast = false;
   bool buttonNow = !digitalRead(2);
   digitalWrite(LED_BUILTIN, buttonNow);
   if (buttonLast & !buttonNow)
   {
+    pageNum = EEPROM.read(0);
     pageNum++;
     if (pageNum >= N_PAGES)
       pageNum = 0;
+    EEPROM.update(0, pageNum);
   }
   buttonLast = buttonNow;
   int16_t value = (((int32_t)getByte(7) - 32) * 500) / 900;

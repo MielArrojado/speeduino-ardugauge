@@ -18,6 +18,7 @@
             "includePath": [
                 "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.3/cores/arduino",
                 "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.3/variants/eightanaloginputs",
+                "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.3/libraries/EEPROM/src",
                 "/Users/miel/Documents/Arduino/libraries/Adafruit_SSD1306",
                 "/Users/miel/Documents/Arduino/libraries/Adafruit_GFX_Library",
                 "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.3/libraries/SPI/src",
