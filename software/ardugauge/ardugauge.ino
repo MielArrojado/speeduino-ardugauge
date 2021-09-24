@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "Pages.h"
 #include "Comms.h"
-#define N_PAGES 13
+#define N_PAGES 14
 
 void setup()
 {
@@ -77,11 +77,14 @@ void loop()
               F("RUN"), getBit(2, 0),
               F("sync"), getBit(31, 7),
               F("warm"), getBit(2, 3),
-              F("soft"), getBit(31, 3),
-              F("HARD"), getBit(31, 2),
+              F(""), getBit(31, 3),
+              F(""), getBit(31, 2),
               F(""), false,
               F("OIL"), getBit(83, 2));
-
+    break;
+  case 13:
+    show2Bar(F("Cycles/sec"), getWord(25), 0, 1000, 0,
+             F("Mem (b)"), getWord(27), 0, 2048, 0);
     break;
   default:
     showSplash(F("Coming Soon!"));

@@ -85,21 +85,17 @@ void show2Bar(const __FlashStringHelper *label1, int16_t value1, int16_t min_val
 
   OLED.setCursor(0, 0);
   OLED.print(label1);
-  // OLED.setFont(&Numbers24pt7b);
   OLED.setTextSize(2);
   OLED.setCursor(offset1, 9);
   OLED.print(valString1);
-  // OLED.setFont();
   OLED.setTextSize(1);
   drawHBar(0, 23, 128, 8, 4, width1);
 
   OLED.setCursor(0, 33);
   OLED.print(label2);
-  // OLED.setFont(&Numbers24pt7b);
   OLED.setTextSize(2);
   OLED.setCursor(offset2, 42);
   OLED.print(valString2);
-  // OLED.setFont();
   OLED.setTextSize(1);
   drawHBar(0, 56, 128, 8, 4, width2);
 

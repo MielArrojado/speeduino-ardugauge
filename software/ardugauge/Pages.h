@@ -10,6 +10,8 @@ void showSplash(const __FlashStringHelper *message);
 
 void showNumeric(const __FlashStringHelper *label, int16_t value, int16_t min_val, int16_t max_val, uint8_t decimal = 0);
 void showBar(const __FlashStringHelper *label, int16_t value, int16_t min_val, int16_t max_val, uint8_t decimal = 0);
+void show2Numeric(const __FlashStringHelper *label1, int16_t value1, int16_t min_val1, int16_t max_val1, uint8_t decimal1,
+                  const __FlashStringHelper *label2, int16_t value2, int16_t min_val2, int16_t max_val2, uint8_t decimal2);
 void show2Bar(const __FlashStringHelper *label1, int16_t value1, int16_t min_val1, int16_t max_val1, uint8_t decimal1,
               const __FlashStringHelper *label2, int16_t value2, int16_t min_val2, int16_t max_val2, uint8_t decimal2);
 void show4Numeric(const __FlashStringHelper *label1, int16_t value1, int16_t min_val1, int16_t max_val1, uint8_t decimal1,
