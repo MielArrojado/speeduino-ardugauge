@@ -2,7 +2,7 @@
 #include "Arduino.h"
 #include "Pages.h"
 #include "Comms.h"
-#define N_PAGES 15
+#define N_PAGES 14
 
 uint8_t pageNum = EEPROM.read(0);
 
@@ -35,7 +35,7 @@ void loop()
 
   // serial operation, frequency based request
   static uint32_t lastUpdate = millis();
-  if (millis() - lastUpdate > 40)
+  if (millis() - lastUpdate > 10)
   {
     requestData(50);
     lastUpdate = millis();
@@ -110,11 +110,10 @@ void loop()
               F("OIL"), getBit(83, 2));
     break;
   case 13:
-    show2Bar(F("Cycles/sec"), getWord(25), 0, 1000, 0,
-             F("Mem (b)"), getWord(27), 0, 2048, 0);
-    break;
-  case 14:
-    showNumeric(F("Refresh (Hz)"), refreshRate, 0, 100);
+    show4Numeric(F("Cycles/sec"), getWord(25), 0, 1000, 0,
+                 F("Mem (b)"), getWord(27), 0, 2048, 0,
+                 F("FPS"), refreshRate, 0, 100, 0,
+                 F(""), 0, 0, 100, 0);
     break;
   default:
     showSplash(F("Coming Soon!"));
