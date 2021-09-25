@@ -2,7 +2,7 @@
 #include "Arduino.h"
 #include "Pages.h"
 #include "Comms.h"
-#define N_PAGES 14
+#define N_PAGES 15
 
 uint8_t pageNum = EEPROM.read(0);
 
@@ -19,6 +19,7 @@ void setup()
 
 void loop()
 {
+  // button and page number operations
   static bool buttonLast = false;
   bool buttonNow = !digitalRead(2);
   digitalWrite(LED_BUILTIN, buttonNow);
@@ -31,8 +32,25 @@ void loop()
     EEPROM.update(0, pageNum);
   }
   buttonLast = buttonNow;
-  int16_t value = (((int32_t)getByte(7) - 32) * 500) / 900;
 
+  // serial operation, frequency based request
+  static uint32_t lastUpdate = millis();
+  if (millis() - lastUpdate > 40)
+  {
+    requestData(50);
+    lastUpdate = millis();
+  }
+
+  // get refresh rate
+  static uint32_t lastRefresh = millis();
+  uint16_t refreshRate = 1000 / (millis() - lastRefresh);
+  lastRefresh = millis();
+
+  // convert temperature;
+  // int16_t value = (((int32_t)getByte(7) - 32) * 500) / 900;
+  int16_t value = (int16_t)(getByte(7) * 5.0 / 9.0) - 32;
+
+  // display pages
   switch (pageNum)
   {
   case 0:
@@ -95,16 +113,11 @@ void loop()
     show2Bar(F("Cycles/sec"), getWord(25), 0, 1000, 0,
              F("Mem (b)"), getWord(27), 0, 2048, 0);
     break;
+  case 14:
+    showNumeric(F("Refresh (Hz)"), refreshRate, 0, 100);
+    break;
   default:
     showSplash(F("Coming Soon!"));
     break;
-  }
-
-  // timed update rate
-  static uint32_t lastUpdate = millis();
-  if (millis() - lastUpdate > 200)
-  {
-    requestData(50);
-    lastUpdate = millis();
   }
 }
