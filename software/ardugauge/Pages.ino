@@ -16,19 +16,19 @@ void initDisplay()
   delay(1000);
 }
 
-void showSplash(const __FlashStringHelper *message)
+void showSplash(Fstring message)
 {
   OLED.clearDisplay();
   OLED.drawBitmap((128 - splash1_width) / 2, (64 - splash1_height) / 2,
                   splash1_data, splash1_width, splash1_height, 1);
-  uint8_t max_char = strlen_P(reinterpret_cast<const char *>(message));
+  uint8_t max_char = strlen_PM(message);
   uint8_t offset = ((128 - 6 * max_char) / 2);
   OLED.setCursor(offset, 56);
   OLED.print(message);
   OLED.display();
 }
 
-void showNumeric(const __FlashStringHelper *label, int16_t value, int16_t min_val, int16_t max_val, uint8_t decimal)
+void showNumeric(Fstring label, int16_t value, int16_t min_val, int16_t max_val, uint8_t decimal)
 {
 
   // allocate character space
@@ -46,7 +46,7 @@ void showNumeric(const __FlashStringHelper *label, int16_t value, int16_t min_va
   OLED.display();
 }
 
-void showBar(const __FlashStringHelper *label, int16_t value, int16_t min_val, int16_t max_val, uint8_t decimal)
+void showBar(Fstring label, int16_t value, int16_t min_val, int16_t max_val, uint8_t decimal)
 {
   // allocate character space
   static char valString[STRING_LENGTH];
@@ -65,8 +65,8 @@ void showBar(const __FlashStringHelper *label, int16_t value, int16_t min_val, i
   OLED.display();
 }
 
-void show2Bar(const __FlashStringHelper *label1, int16_t value1, int16_t min_val1, int16_t max_val1, uint8_t decimal1,
-              const __FlashStringHelper *label2, int16_t value2, int16_t min_val2, int16_t max_val2, uint8_t decimal2)
+void show2Bar(Fstring label1, int16_t value1, int16_t min_val1, int16_t max_val1, uint8_t decimal1,
+              Fstring label2, int16_t value2, int16_t min_val2, int16_t max_val2, uint8_t decimal2)
 
 {
 
@@ -102,10 +102,10 @@ void show2Bar(const __FlashStringHelper *label1, int16_t value1, int16_t min_val
   OLED.display();
 }
 
-void show4Numeric(const __FlashStringHelper *label1, int16_t value1, int16_t min_val1, int16_t max_val1, uint8_t decimal1,
-                  const __FlashStringHelper *label2, int16_t value2, int16_t min_val2, int16_t max_val2, uint8_t decimal2,
-                  const __FlashStringHelper *label3, int16_t value3, int16_t min_val3, int16_t max_val3, uint8_t decimal3,
-                  const __FlashStringHelper *label4, int16_t value4, int16_t min_val4, int16_t max_val4, uint8_t decimal4)
+void show4Numeric(Fstring label1, int16_t value1, int16_t min_val1, int16_t max_val1, uint8_t decimal1,
+                  Fstring label2, int16_t value2, int16_t min_val2, int16_t max_val2, uint8_t decimal2,
+                  Fstring label3, int16_t value3, int16_t min_val3, int16_t max_val3, uint8_t decimal3,
+                  Fstring label4, int16_t value4, int16_t min_val4, int16_t max_val4, uint8_t decimal4)
 {
   // allocate character space
   static char valString1[22];
@@ -117,7 +117,7 @@ void show4Numeric(const __FlashStringHelper *label1, int16_t value1, int16_t min
   OLED.drawFastHLine(0, 31, 128, SSD1306_WHITE);
   OLED.drawFastVLine(63, 0, 64, SSD1306_WHITE);
 
-  if (strlen_P(reinterpret_cast<const char *>(label1)) != 0)
+  if (strlen_PM(label1) != 0)
   {
     formatValue(valString1, value1, decimal1);
     uint8_t offset1 = centering(valString1, 12, 62, maxChar(min_val1, max_val1, decimal1));
@@ -132,7 +132,7 @@ void show4Numeric(const __FlashStringHelper *label1, int16_t value1, int16_t min
     OLED.setTextSize(1);
   }
 
-  if (strlen_P(reinterpret_cast<const char *>(label2)) != 0)
+  if (strlen_PM(label2) != 0)
   {
     formatValue(valString2, value2, decimal2);
     uint8_t offset2 = centering(valString2, 12, 62, maxChar(min_val2, max_val2, decimal2));
@@ -147,7 +147,7 @@ void show4Numeric(const __FlashStringHelper *label1, int16_t value1, int16_t min
     OLED.setTextSize(1);
   }
 
-  if (strlen_P(reinterpret_cast<const char *>(label3)) != 0)
+  if (strlen_PM(label3) != 0)
   {
     formatValue(valString3, value3, decimal3);
     uint8_t offset3 = centering(valString3, 12, 62, maxChar(min_val3, max_val3, decimal3));
@@ -162,7 +162,7 @@ void show4Numeric(const __FlashStringHelper *label1, int16_t value1, int16_t min
     OLED.setTextSize(1);
   }
 
-  if (strlen_P(reinterpret_cast<const char *>(label4)) != 0)
+  if (strlen_PM(label4) != 0)
   {
     formatValue(valString4, value4, decimal4);
     uint8_t offset4 = centering(valString4, 12, 62, maxChar(min_val4, max_val4, decimal4));
@@ -180,14 +180,14 @@ void show4Numeric(const __FlashStringHelper *label1, int16_t value1, int16_t min
   OLED.display();
 }
 
-void showFlags(const __FlashStringHelper *label1, bool value1,
-               const __FlashStringHelper *label2, bool value2,
-               const __FlashStringHelper *label3, bool value3,
-               const __FlashStringHelper *label4, bool value4,
-               const __FlashStringHelper *label5, bool value5,
-               const __FlashStringHelper *label6, bool value6,
-               const __FlashStringHelper *label7, bool value7,
-               const __FlashStringHelper *label8, bool value8)
+void showFlags(Fstring label1, bool value1,
+               Fstring label2, bool value2,
+               Fstring label3, bool value3,
+               Fstring label4, bool value4,
+               Fstring label5, bool value5,
+               Fstring label6, bool value6,
+               Fstring label7, bool value7,
+               Fstring label8, bool value8)
 {
   OLED.clearDisplay();
 
@@ -203,11 +203,11 @@ void showFlags(const __FlashStringHelper *label1, bool value1,
   OLED.display();
 }
 
-void drawFlag(const __FlashStringHelper *label, bool value, uint8_t x, uint8_t y, uint8_t w, uint8_t h)
+void drawFlag(Fstring label, bool value, uint8_t x, uint8_t y, uint8_t w, uint8_t h)
 {
-  if (strlen_P(reinterpret_cast<const char *>(label)) != 0)
+  if (strlen_PM(label) != 0)
   {
-    uint8_t max_char = strlen_P(reinterpret_cast<const char *>(label));
+    uint8_t max_char = strlen_PM(label);
     uint8_t x_offset = ((w - 6 * max_char) / 2);
     uint8_t y_offset = (h - 8) / 2;
 
