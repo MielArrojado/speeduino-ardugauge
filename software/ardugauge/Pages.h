@@ -21,6 +21,7 @@ void show4Numeric(Fstring label1, int16_t value1, int16_t min_val1, int16_t max_
                   Fstring label2, int16_t value2, int16_t min_val2, int16_t max_val2, uint8_t decimal2,
                   Fstring label3, int16_t value3, int16_t min_val3, int16_t max_val3, uint8_t decimal3,
                   Fstring label4, int16_t value4, int16_t min_val4, int16_t max_val4, uint8_t decimal4);
+void drawQuarter(Fstring label, int16_t value, int16_t min_val, int16_t max_val, uint8_t decimal, uint8_t quad);
 void showFlags(Fstring label1, bool value1,
                Fstring label2, bool value2,
                Fstring label3, bool value3,

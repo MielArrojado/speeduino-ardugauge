@@ -107,77 +107,38 @@ void show4Numeric(Fstring label1, int16_t value1, int16_t min_val1, int16_t max_
                   Fstring label3, int16_t value3, int16_t min_val3, int16_t max_val3, uint8_t decimal3,
                   Fstring label4, int16_t value4, int16_t min_val4, int16_t max_val4, uint8_t decimal4)
 {
-  // allocate character space
-  static char valString1[22];
-  static char valString2[22];
-  static char valString3[22];
-  static char valString4[22];
 
   OLED.clearDisplay();
   OLED.drawFastHLine(0, 31, 128, SSD1306_WHITE);
   OLED.drawFastVLine(63, 0, 64, SSD1306_WHITE);
 
-  if (strlen_PM(label1) != 0)
-  {
-    formatValue(valString1, value1, decimal1);
-    uint8_t offset1 = centering(valString1, 12, 62, maxChar(min_val1, max_val1, decimal1));
-
-    OLED.setCursor(0, 0);
-    OLED.print(label1);
-    // OLED.setFont(&Numbers24pt7b);
-    OLED.setTextSize(2);
-    OLED.setCursor(offset1, 12);
-    OLED.print(valString1);
-    // OLED.setFont();
-    OLED.setTextSize(1);
-  }
-
-  if (strlen_PM(label2) != 0)
-  {
-    formatValue(valString2, value2, decimal2);
-    uint8_t offset2 = centering(valString2, 12, 62, maxChar(min_val2, max_val2, decimal2));
-
-    OLED.setCursor(0, 34);
-    OLED.print(label2);
-    // OLED.setFont(&Numbers24pt7b);
-    OLED.setTextSize(2);
-    OLED.setCursor(offset2, 46);
-    OLED.print(valString2);
-    // OLED.setFont();
-    OLED.setTextSize(1);
-  }
-
-  if (strlen_PM(label3) != 0)
-  {
-    formatValue(valString3, value3, decimal3);
-    uint8_t offset3 = centering(valString3, 12, 62, maxChar(min_val3, max_val3, decimal3));
-
-    OLED.setCursor(66, 0);
-    OLED.print(label3);
-    // OLED.setFont(&Numbers24pt7b);
-    OLED.setTextSize(2);
-    OLED.setCursor(offset3 + 66, 12);
-    OLED.print(valString3);
-    // OLED.setFont();
-    OLED.setTextSize(1);
-  }
-
-  if (strlen_PM(label4) != 0)
-  {
-    formatValue(valString4, value4, decimal4);
-    uint8_t offset4 = centering(valString4, 12, 62, maxChar(min_val4, max_val4, decimal4));
-
-    OLED.setCursor(66, 34);
-    OLED.print(label4);
-    // OLED.setFont(&Numbers24pt7b);
-    OLED.setTextSize(2);
-    OLED.setCursor(offset4 + 66, 46);
-    OLED.print(valString4);
-    // OLED.setFont();
-    OLED.setTextSize(1);
-  }
+  drawQuarter(label1, value1, min_val1, max_val1, decimal1, 0);
+  drawQuarter(label2, value2, min_val2, max_val2, decimal2, 1);
+  drawQuarter(label3, value3, min_val3, max_val3, decimal3, 2);
+  drawQuarter(label4, value4, min_val4, max_val4, decimal4, 3);
 
   OLED.display();
+}
+
+void drawQuarter(Fstring label, int16_t value, int16_t min_val, int16_t max_val, uint8_t decimal, uint8_t quad)
+{
+  static char valString[22];
+  if (strlen_PM(label) != 0)
+  {
+    uint8_t offsetX = bitRead(quad, 0) ? 66 : 0;
+    uint8_t offsetY = bitRead(quad, 1) ? 34 : 0;
+    formatValue(valString, value, decimal);
+    uint8_t offset = centering(valString, 12, 62, maxChar(min_val, max_val, decimal));
+
+    OLED.setCursor(offsetX, offsetY);
+    OLED.print(label);
+    // OLED.setFont(&Numbers24pt7b);
+    OLED.setTextSize(2);
+    OLED.setCursor(offset + offsetX, 12 + offsetY);
+    OLED.print(valString);
+    // OLED.setFont();
+    OLED.setTextSize(1);
+  }
 }
 
 void showFlags(Fstring label1, bool value1,
