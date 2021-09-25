@@ -13,10 +13,9 @@ void showSplash(Fstring message);
 
 void showNumeric(Fstring label, int16_t value, int16_t min_val, int16_t max_val, uint8_t decimal = 0);
 void showBar(Fstring label, int16_t value, int16_t min_val, int16_t max_val, uint8_t decimal = 0);
-void show2Numeric(Fstring label1, int16_t value1, int16_t min_val1, int16_t max_val1, uint8_t decimal1,
-                  Fstring label2, int16_t value2, int16_t min_val2, int16_t max_val2, uint8_t decimal2);
 void show2Bar(Fstring label1, int16_t value1, int16_t min_val1, int16_t max_val1, uint8_t decimal1,
               Fstring label2, int16_t value2, int16_t min_val2, int16_t max_val2, uint8_t decimal2);
+void drawHalfBar(Fstring label, int16_t value, int16_t min_val, int16_t max_val, uint8_t decimal, uint8_t half);
 void show4Numeric(Fstring label1, int16_t value1, int16_t min_val1, int16_t max_val1, uint8_t decimal1,
                   Fstring label2, int16_t value2, int16_t min_val2, int16_t max_val2, uint8_t decimal2,
                   Fstring label3, int16_t value3, int16_t min_val3, int16_t max_val3, uint8_t decimal3,

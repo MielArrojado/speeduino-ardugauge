@@ -70,36 +70,31 @@ void show2Bar(Fstring label1, int16_t value1, int16_t min_val1, int16_t max_val1
 
 {
 
-  // allocate character space
-  static char valString1[STRING_LENGTH];
-  formatValue(valString1, value1, decimal1);
-  uint8_t offset1 = centering(valString1, 12, 128, maxChar(min_val1, max_val1, decimal1));
-  uint8_t width1 = constrain(map(value1, min_val1, max_val1, 0, 128), 0, 128);
-
-  static char valString2[STRING_LENGTH];
-  formatValue(valString2, value2, decimal2);
-  uint8_t offset2 = centering(valString2, 12, 128, maxChar(min_val2, max_val2, decimal2));
-  uint8_t width2 = constrain(map(value2, min_val2, max_val2, 0, 128), 0, 128);
-
   OLED.clearDisplay();
-
-  OLED.setCursor(0, 0);
-  OLED.print(label1);
-  OLED.setTextSize(2);
-  OLED.setCursor(offset1, 9);
-  OLED.print(valString1);
-  OLED.setTextSize(1);
-  drawHBar(0, 23, 128, 8, 4, width1);
-
-  OLED.setCursor(0, 33);
-  OLED.print(label2);
-  OLED.setTextSize(2);
-  OLED.setCursor(offset2, 42);
-  OLED.print(valString2);
-  OLED.setTextSize(1);
-  drawHBar(0, 56, 128, 8, 4, width2);
+  drawHalfBar(label1, value1, min_val1, max_val1, decimal1, 0);
+  drawHalfBar(label2, value2, min_val2, max_val2, decimal2, 1);
 
   OLED.display();
+}
+
+void drawHalfBar(Fstring label, int16_t value, int16_t min_val, int16_t max_val, uint8_t decimal, uint8_t half)
+{
+  static char valString[22];
+  if (strlen_PM(label) != 0)
+  {
+    uint8_t offsetY = bitRead(half, 0) ? 33 : 0;
+    formatValue(valString, value, decimal);
+    uint8_t offset = centering(valString, 12, 62, maxChar(min_val, max_val, decimal));
+    uint8_t width = constrain(map(value, min_val, max_val, 0, 128), 0, 128);
+
+    OLED.setCursor(0, offsetY);
+    OLED.print(label);
+    OLED.setTextSize(2);
+    OLED.setCursor(offset, 9 + offsetY);
+    OLED.print(valString);
+    OLED.setTextSize(1);
+    drawHBar(0, 23 + offsetY, 128, 8, 4, width);
+  }
 }
 
 void show4Numeric(Fstring label1, int16_t value1, int16_t min_val1, int16_t max_val1, uint8_t decimal1,
