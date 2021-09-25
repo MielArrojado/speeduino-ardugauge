@@ -84,7 +84,7 @@ void drawHalfBar(Fstring label, int16_t value, int16_t min_val, int16_t max_val,
   {
     uint8_t offsetY = bitRead(half, 0) ? 33 : 0;
     formatValue(valString, value, decimal);
-    uint8_t offset = centering(valString, 12, 62, maxChar(min_val, max_val, decimal));
+    uint8_t offset = centering(valString, 12, 128, maxChar(min_val, max_val, decimal));
     uint8_t width = constrain(map(value, min_val, max_val, 0, 128), 0, 128);
 
     OLED.setCursor(0, offsetY);
