@@ -46,11 +46,6 @@ void loop()
   uint16_t refreshRate = 1000 / (millis() - lastRefresh);
   lastRefresh = millis();
 
-  // convert temperature;
-  // int16_t clt = (((int32_t)getByte(7) - 32) * 500) / 900;
-  int16_t clt = ((int16_t)(getByte(7) - 32) * 5.0 / 9.0);
-  // int16_t clt = getByte(7);
-
   // display pages
   switch (pageNum)
   {
@@ -61,7 +56,7 @@ void loop()
     showBar(F("MAP (kPa)"), getWord(4), 0, 101);
     break;
   case 2:
-    showBar(F("Coolant Temp (\367C)"), clt, 0, 120);
+    showBar(F("Coolant Temp (\367C)"), (int16_t)getByte(7) - 40, 0, 120);
     break;
   case 3:
     showBar(F("Battery (V)"), getByte(9), 60, 160, 1);
@@ -80,7 +75,7 @@ void loop()
                  F("Adv (deg)"), (int8_t)getByte(23), -10, 40, 0);
     break;
   case 7:
-    show4Numeric(F("CLT (\367C)"), clt, 0, 120, 0,
+    show4Numeric(F("CLT (\367C)"), (int16_t)getByte(7) - 40, 0, 120, 0, // temp offset by 40
                  F("EOP (psi)"), getByte(104), 0, 100, 0,
                  F("Batt (V)"), getByte(9), 60, 160, 1,
                  F("Dwell (ms)"), (int8_t)getByte(3), 0, 200, 1);
