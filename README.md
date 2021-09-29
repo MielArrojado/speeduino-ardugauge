@@ -2,7 +2,7 @@
 
 ![speeduino-ardugauge](images/ardugauge.jpeg)
 
-An OLED gauge for the Speeduino ECU. Uses UART (secondary serial) for communication. See [demo video](https://youtu.be/CHvzBlRpPmE).
+An OLED gauge for the Speeduino ECU. Uses UART (secondary serial) for communication. See [demo video](https://youtu.be/CHvzBlRpPmE). See [screenshots](images/).
 
 _NOTE:_ The gauge shares the same Serial port for communcations with Speeduino ECU and USB connection for programming. Disconnect from the ECU if you wish to upload the Arduino sketch.
 
