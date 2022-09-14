@@ -16,20 +16,20 @@
             ],
             "intelliSenseMode": "gcc-x64",
             "includePath": [
-                "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.3/cores/arduino",
-                "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.3/variants/eightanaloginputs",
-                "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.3/libraries/EEPROM/src",
+                "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.5/cores/arduino",
+                "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.5/variants/eightanaloginputs",
+                "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.5/libraries/EEPROM/src",
                 "/Users/miel/Documents/Arduino/libraries/Adafruit_SSD1306",
                 "/Users/miel/Documents/Arduino/libraries/Adafruit_GFX_Library",
-                "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.3/libraries/SPI/src",
-                "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.3/libraries/Wire/src",
                 "/Users/miel/Documents/Arduino/libraries/Adafruit_BusIO",
+                "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.5/libraries/Wire/src",
+                "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.5/libraries/SPI/src",
                 "/Users/miel/Library/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/lib/gcc/avr/7.3.0/include",
                 "/Users/miel/Library/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/lib/gcc/avr/7.3.0/include-fixed",
                 "/Users/miel/Library/Arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/avr/include"
             ],
             "forcedInclude": [
-                "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.3/cores/arduino/Arduino.h"
+                "/Users/miel/Library/Arduino15/packages/arduino/hardware/avr/1.8.5/cores/arduino/Arduino.h"
             ],
             "cStandard": "c11",
             "cppStandard": "c++11",
