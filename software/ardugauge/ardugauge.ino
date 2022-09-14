@@ -2,6 +2,7 @@
 #include "Arduino.h"
 #include "Pages.h"
 #include "Comms.h"
+#define N_PAGES 11
 #define BUTTON_HOLD_TIME 500
 
 uint8_t pageNum = EEPROM.read(0);
@@ -47,11 +48,11 @@ void loop()
   {
     if (!buttonHeld) // do not perform if button hold action executed.
     {
-    pageNum = EEPROM.read(0);
-    pageNum++;
-    if (pageNum >= N_PAGES)
-      pageNum = 0;
-    EEPROM.update(0, pageNum);
+      pageNum = EEPROM.read(0);
+      pageNum++;
+      if (pageNum >= N_PAGES)
+        pageNum = 0;
+      EEPROM.update(0, pageNum);
     }
     buttonHeld = false;
   }
@@ -105,6 +106,12 @@ void loop()
                  F("Dwell (ms)"), (int8_t)getByte(3), 0, 200, 1);
     break;
   case 8:
+    show4Numeric(F("RPM"), getWord(14), 0, 6000, 0,
+                 F("MAP (kpa)"), getWord(4), 0, 120, 0,
+                 F("CLT (\367C)"), (int16_t)getByte(7) - 40, 0, 120, 0, // temp offset by 40
+                 F("Batt (V)"), getByte(9), 60, 160, 1);
+    break;
+  case 9:
     showFlags(F("crank"), getBit(2, 1),
               F("RUN"), getBit(2, 0),
               F("sync"), getBit(31, 7),
@@ -114,7 +121,7 @@ void loop()
               F(""), false,
               F(""), false);
     break;
-  case 9:
+  case 10:
     show4Numeric(F("Cycles/sec"), getWord(25), 0, 1000, 0,
                  F("Mem (b)"), getWord(27), 0, 2048, 0,
                  F("FPS"), refreshRate, 0, 100, 0,
