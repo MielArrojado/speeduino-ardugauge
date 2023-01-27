@@ -2,6 +2,7 @@
 #include "Arduino.h"
 #include "Pages.h"
 #include "Comms.h"
+#define N_PAGES 10
 #define BUTTON_HOLD_TIME 500
 
 uint8_t pageNum = EEPROM.read(0);
@@ -47,11 +48,11 @@ void loop()
   {
     if (!buttonHeld) // do not perform if button hold action executed.
     {
-    pageNum = EEPROM.read(0);
-    pageNum++;
-    if (pageNum >= N_PAGES)
-      pageNum = 0;
-    EEPROM.update(0, pageNum);
+      pageNum = EEPROM.read(0);
+      pageNum++;
+      if (pageNum >= N_PAGES)
+        pageNum = 0;
+      EEPROM.update(0, pageNum);
     }
     buttonHeld = false;
   }
